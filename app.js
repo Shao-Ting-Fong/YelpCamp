@@ -1,3 +1,7 @@
+// if (process.env.NODE_ENV !== "production") {
+require("dotenv").config();
+// }
+
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -82,6 +86,7 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  console.log(err);
   const { statusCode = 500 } = err;
   if (!err.message) {
     err.message = "Oh No! Something Went Wrong!";
