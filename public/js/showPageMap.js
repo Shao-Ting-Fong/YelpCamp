@@ -13,3 +13,6 @@ const marker = new mapboxgl.Marker()
   .setLngLat(coordinates)
   .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<h5>${campground.title}</h5><p>${campground.location}</p>`))
   .addTo(map);
+
+const nav = new mapboxgl.NavigationControl();
+map.addControl(nav, "top-right");
