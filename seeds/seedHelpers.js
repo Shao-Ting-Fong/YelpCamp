@@ -13,7 +13,7 @@ async function seedImg() {
       },
     });
 
-    return res.data.urls.small;
+    return { url: res.data.urls.small, filename: res.data.id };
   } catch (err) {
     console.error(err);
   }
@@ -46,9 +46,16 @@ module.exports.places = [
 ];
 
 module.exports.randomImages = async (num) => {
-  const imgPromises = Array.from({ length: num }, async (ele, i) => {
-    return { url: await seedImg(), filename: `img_${i}` };
+  const imgPromises = Array.from({ length: num }, async (ele) => {
+    return await seedImg();
   });
   const images = await Promise.all(imgPromises);
   return images;
 };
+
+// async function main() {
+//   const result = await randomImages(2);
+//   console.log(result);
+// }
+
+// main();
