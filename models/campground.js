@@ -22,36 +22,51 @@ ImageSchema.virtual("thumbnail").get(function () {
   }
 });
 
-const CampgroundSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  images: [ImageSchema],
-  price: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  location: {
-    type: String,
-    required: true,
-  },
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-  reviews: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Review",
+const opts = { toJSON: { virtuals: true } };
+const CampgroundSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
     },
-  ],
-});
+    images: [ImageSchema],
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    geometry: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
+  },
+  opts
+);
 
 CampgroundSchema.post("findOneAndDelete", async function (campground) {
   if (campground.reviews) {
@@ -62,6 +77,12 @@ CampgroundSchema.post("findOneAndDelete", async function (campground) {
       if (img.url.includes("cloudinary")) await cloudinary.uploader.destroy(img.filename);
     }
   }
+});
+
+CampgroundSchema.virtual("properties.popUpMarkup").get(function () {
+  return `
+  <strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+  <p>${this.location}</p>`;
 });
 
 module.exports = mongoose.model("Campground", CampgroundSchema);
