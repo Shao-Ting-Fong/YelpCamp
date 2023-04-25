@@ -6,10 +6,11 @@ const cities = require("./cities");
 const { places, descriptors, randomImages } = require("./seedHelpers");
 
 require("dotenv").config({ path: path.join(__dirname, "/../.env") });
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/yelp-camp";
 
 async function main() {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp", { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log("CONNECTION OPEN!!!");
   } catch (error) {
     console.log("OH NO ERROR!!!!");
